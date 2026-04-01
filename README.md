@@ -1,89 +1,91 @@
-# 💈 Trisassor Barber House
+# Trisassor Barber House
 
-![Project Banner](https://via.placeholder.com/1200x400/1e293b/facc15?text=Trisassor+Barber+House)
+Trisassor Barber House adalah aplikasi web reservasi/booking barbershop yang dibangun menggunakan Laravel 12. Aplikasi ini dirancang agar customer bisa dengan mudah memesan jadwal cukur dengan kapster (barber) pilihan mereka.
 
-**Trisassor Barber House** adalah platform reservasi cukur rambut (barbershop) modern yang dirancang untuk memberikan pengalaman pemesanan premium dan antarmuka *glassmorphism* yang elegan. Dibangun dengan *stack* teknologi terkini untuk memastikan kecepatan, keamanan, dan *User Experience* (UX) terbaik.
+## Fitur Utama
+- **Sistem Booking**: Fitur booking yang interaktif menggunakan Alpine.js untuk mengatur alur memilih layanan, meja/kapster, hingga jam operasional.
+- **Login Cepat Google**: Terintegrasi penuh dengan Laravel Socialite, jadi user bisa langsung login pakai akun Google (dilengkapi validasi agar pelanggan otomatis diminta melengkapi nomor HP/WhatsApp).
+- **Desain Modern (Glassmorphism)**: Tampilan UI dibuat rapi dan ringan menggunakan Tailwind CSS v4.
+- **Akses Admin & Pelanggan**: Pembagian halaman (*routing* dan dasbor) khusus untuk akses pengelola toko maupun riwayat pemesanan milik customer.
+- **Support Docker**: Sudah termasuk `Dockerfile` dan konfigurasi `compose` standar siap pakai, memudahkan ketika aplikasi akan di-*deploy* rilis ke server.
+
+## Tech Stack
+- **Backend Framework**: Laravel 12 (PHP 8.2+)
+- **Database**: MySQL / MariaDB
+- **Frontend**: DOM Alpine.js, styling Tailwind CSS v4, kompilator Vite
+- **Deployment Layer**: Nginx/Apache Docker, Podman
+- **Otentikasi**: Laravel Breeze
 
 ---
 
-## 🚀 Fitur Utama
-*   **Sistem Reservasi (Booking) Real-Time**: Alur *booking* dengan Alpine.js (reaktif tanpa pingsan halaman) yang ditenagai oleh UI modern, memilih kapster (Barber), jenis layanan (Service), tanggal, waktu, hingga mendapatkan *Queue Number* (Nomor Antrean) secara otomatis.
-*   **Google OAuth Authentication**: Login super cepat dengan sistem *socialite* yang memaksa pengguna melengkapi nomor ponsel sebelum diizinkan memesan (Profile Completion Flow).
-*   **Antarmuka Glassmorphism (Premium Design)**: Efek `backdrop-blur-lg` dengan animasi navigasi responsif dan *smooth scrolling* di Hero Section.
-*   **Role Management (Breeze)**: Pemisahan tegas halaman dasbor admin & manajer (*backend*) dengan halaman pemesanan bagi *customer*.
-*   **Production Simulation Ready**: Telah dikonfigurasi penuh dengan `Dockerfile` (Multi-stage Build & Apache-PHP 8.2) dan `.env` yang terisolasi siap-*deploy* khusus Railway / Vercel.
+## Panduan Instalasi (Local Development)
 
----
+Untuk teman-teman atau anggota tim yang mau *clone* dan ikut mengembangkan (*development*) proyek ini dari awal, syaratnya cukup instal: **PHP (Min 8.2)**, **Composer**, **Node.js**, dan bawaan **MySQL (seperti XAMPP)** di komputernya.
 
-## 🛠 Instalasi untuk Development Lokal
-Jika Anda meng-*clone* repositori ini, pastikan Anda telah memasang **PHP 8.2+**, **Composer**, **Node.js (v20+)**, dan **MySQL/MariaDB (via XAMPP)** di dalam komputer Anda.
-
-Jalankan perintah berikut di Terminal secara berurutan:
-
+### 1. Clone Project & Install Library
+Buka terminal dan ketik perintah berikut:
 ```bash
-# 1. Unduh repositori ini
 git clone https://github.com/mwildans/trisassor_barber.git
 cd trisassor_barber
 
-# 2. Pasang semua pustaka backend PHP
+# Install seluruh kebutuhan library backend (Laravel)
 composer install
 
-# 3. Pasang semua pustaka frontend (Tailwind v4, Alpine, Vite)
+# Install kebutuhan engine javascript & CSS
 npm install
-
-# 4. Salin konfigurasi environment default
-cp .env.example .env
-
-# 5. Bangkitkan Kunci Keamanan internal (Application Key) Laravel Anda
-php artisan key:generate
 ```
 
-### ⚙️ Penyiapan Database
-1. Buka *database management tool* (seperti phpMyAdmin atau HeidiSQL) untuk MySQL Anda.
-2. Buat satu *database* kosong dengan nama `trisassor_barber`.
-3. Buka konfigurasi `.env` Anda, pastikan data *database* (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) terhubung ke komputer Anda.
+### 2. Atur Konfigurasi Lingkungan (.env)
+Buat salinan *(copy)* dari file bernamakan `.env.example`, lalu beri nama `.env` saja.
+Buka file `.env` tersebut dan pastikan rincian server database XAMPP kalian telah sesuai (ganti namanya sama seperti isi di phpmyadmin), contohnya seperti ini:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=trisassor_barber
+DB_USERNAME=root   # Default XAMPP
+DB_PASSWORD=       # Kosongkan jika XAMPP
+```
+*(Ingat ya, pergi ke **phpMyAdmin** lalu buat dulu database baru yang kosong memakai nama `trisassor_barber` tersebut!)*
 
-Setelah nama database disetel, jalankan perintah struktur migrasi data dan gambar:
+### 3. Generate Kunci Autentikasi dan Tabel Database
+Jika database kosong sudah siap, eksekusi pembuatan struktur tabel dan kunci app di terminal:
 ```bash
-# 1. Bangun tabel-tabel terhubung (Users, Bookings, Barbers, Services, Schedules)
+php artisan key:generate
 php artisan migrate
 
-# 2. Buka lorong direktori publik agar semua logo foto dan gambar kapster (Storage) bisa terbaca web
+# Step ini wajib dijalankan supaya folder direktori foto/gambar kapster bisa dirender di web
 php artisan storage:link
 ```
 
-### 🏃‍♂️ Menjalankan Proyek
-Buka **Dua (2) Jendela Terminal**, dan jalankan ini di masing-masing:
+### 4. Mulai Ber-koding! 🏃‍♂️
+Nyalakan **dua (2) buah terminal**, dan pastikan keduanya berjalan beriringan selama pengerjaan:
+
+Terminal 1 (Untuk menjalankan program PHP):
 ```bash
-# Terminal 1 - Menyalakan Server Backend (PHP)
 php artisan serve
 ```
+
+Terminal 2 (Untuk men-compile perombakan teks dan desain CSS secara riil):
 ```bash
-# Terminal 2 - Menyalakan Server Frontend Hot-Reloading (Vite)
 npm run dev
 ```
-Buka browser Anda dan kunjungi 👉 **[http://localhost:8000](http://localhost:8000)**. Selamat Datang!
+
+Buka tab baru di browser kalian dan klik link ini: 👉 **[http://localhost:8000](http://localhost:8000)**.
 
 ---
 
-## 🐋 Simulasi Internet / Podman Server Test (Level Production)
-Jika Anda sudah tak ingin mengusik desain koding, dan ingin mengetes 100% simulasi utuh seperti apa hasilnya saat diunggah server aslinya (*Railway Cloud*):
+## Mengetes Server ala Production (Docker / Podman)
 
+**Catatan:** Trik tes *Container* simulasi ini cuma dilakukan kalau *website* sudah jadi mentah dan siap lempar ke peladen publik (seperti Railway). Untuk koding sehari-harinya, tetap andalkan langkah `php artisan serve` di atas!
+
+Jika kalian ingin tahu *environment* aslinya sebelum dilepas:
 ```bash
-# Bangun replika gambar Docker dan jalankan layanannya
+# Untuk pengguna Podman Desktop
 podman compose up -d --build
 
-# Untuk Docker tulen: docker-compose up -d --build
+# Bagi pengguna Docker standar:
+# docker-compose up -d --build
 ```
-Kunjungi 👉 **[http://localhost:8080](http://localhost:8080)**. Semua *cache*, file internal web, dan *Apache service* akan tertulis mentah *(static-compiled)* seperti versi akhir produk di internet.
-
----
-
-## 💻 Stack & Library yang Digunakan
-*   **Core**: Laravel 12.x Core
-*   **Database**: MySQL/MariaDB
-*   **Frontend**: Alpine.js v3 | Tailwind CSS v4.0 via Vite
-*   **Auth**: Laravel Breeze | Laravel Socialite (Google OAuth)
-*   **Container**: Dockerfile & `docker-compose` Native Support
-
-*(Dokumen ini akan terus disempurnakan seiring berjalannya fase pengujian produk).*
+Web bisa diintip di port independen: 👉 **[http://localhost:8080](http://localhost:8080)**.
+(Untuk membongkarnya, cukup lempar perintah `podman compose down`).
