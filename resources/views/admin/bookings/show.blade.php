@@ -35,6 +35,7 @@
                 $rows = [
                     ['Pelanggan', $booking->user->name . ' (' . $booking->user->email . ')'],
                     ['Telepon', $booking->user->phone ?? '-'],
+                    ['No. Antrian', $booking->formatted_queue_number],
                     ['Layanan', $booking->service->name],
                     ['Barber', $booking->barber->name],
                     ['Tanggal', $booking->booking_date->translatedFormat('l, d F Y')],

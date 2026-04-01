@@ -27,8 +27,8 @@
          class="relative z-50">
 
         <nav id="navbar" 
-             class="fixed left-0 right-0 transition-all duration-500 mx-auto z-50 flex justify-between items-center"
-             :class="scrolled ? 'top-4 w-[95%] max-w-6xl bg-barber-dark/90 backdrop-blur-md shadow-2xl rounded-2xl border border-zinc-800/80 py-3 px-6 md:px-8' : 'top-0 w-full bg-transparent py-5 px-6 md:px-12'">
+             class="fixed left-0 right-0 mx-auto z-50 flex justify-between items-center transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
+             :class="scrolled ? 'top-4 w-[95%] max-w-6xl bg-white/10 backdrop-blur-lg shadow-2xl rounded-4xl py-3 px-6 md:px-2' : 'top-0 w-full max-w-full bg-white/0 backdrop-blur-none shadow-none rounded-none py-5 px-6 md:px-18'">
 
             {{-- Logo --}}
             <a href="{{ route('home') }}" wire:navigate class="flex items-center gap-2 group z-50">
@@ -48,12 +48,8 @@
 
             {{-- CTA + Auth --}}
             <div class="hidden md:flex items-center gap-4">
-                @guest
-                    <a href="{{ route('login') }}" wire:navigate class="text-xs uppercase tracking-widest text-gray-400 hover:text-barber-gold transition-colors font-semibold">Masuk</a>
-                @endguest
-
                 @auth
-                    <div class="flex items-center gap-3 mr-4">
+                    <div class="flex items-center gap-3 mr-2">
                         @if(auth()->user()->avatar)
                             <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-barber-gold aspect-square object-cover shadow-sm">
                         @else
@@ -65,29 +61,31 @@
                     </div>
 
                     @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-2.5 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
-                            Admin Pnl
+                        <a href="{{ route('admin.dashboard') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-2.5 px-6 rounded-full transition-all duration-300 shadow-lg">
+                            Admin Panel
                         </a>
                     @else
-                        <a href="{{ route('booking.index') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-2.5 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
-                            Booking Saya
+                        <a href="{{ route('booking.index') }}" wire:navigate class="text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors font-semibold px-2">
+                            Riwayat
+                        </a>
+                        <a href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-2.5 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-barber-gold/20">
+                            + Reservasi
                         </a>
                     @endif
 
-                    <form method="POST" action="{{ route('logout') }}" class="m-0 p-0 flex items-center ml-2">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0 p-0 flex items-center ml-2 border-l border-zinc-700 pl-4">
                         @csrf
-                        <button type="submit" title="Keluar" class="text-zinc-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-zinc-800 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-                            </svg>
+                        <button type="submit" title="Keluar" class="text-zinc-500 hover:text-red-500 transition-colors p-1 rounded hover:bg-zinc-800/50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 border-none"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
                         </button>
                     </form>
                 @endauth
 
                 @guest
-                <a href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    Reservasi
-                </a>
+                    <a href="{{ route('login') }}" wire:navigate class="text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors font-semibold pr-4 border-r border-zinc-700">Masuk</a>
+                    <a href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-widest py-2.5 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-barber-gold/20 mr-2">
+                        Reservasi
+                    </a>
                 @endguest
             </div>
 
@@ -139,9 +137,12 @@
                             </a>
                         </li>
                     @else
-                        <li class="w-full px-8 mt-2">
-                            <a @click="open=false" href="{{ route('booking.index') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-sm uppercase tracking-wider py-4 px-8 rounded-full transition-all w-full flex justify-center shadow-lg">
-                                Booking Saya
+                        <li class="w-full px-8 mt-2 flex flex-col gap-4">
+                            <a @click="open=false" href="{{ route('booking.index') }}" wire:navigate class="border border-zinc-700 hover:border-barber-gold text-white font-bold text-sm uppercase tracking-wider py-3.5 px-8 rounded-full transition-all w-full flex justify-center shadow-lg">
+                                Riwayat Reservasi
+                            </a>
+                            <a @click="open=false" href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-sm uppercase tracking-wider py-3.5 px-8 rounded-full transition-all w-full flex justify-center shadow-lg shadow-barber-gold/20">
+                                + Reservasi Baru
                             </a>
                         </li>
                     @endif
@@ -155,16 +156,15 @@
                         </form>
                     </li>
                 @endauth
-                @guest
-                    <li><a @click="open=false" href="{{ route('login') }}" wire:navigate class="hover:text-barber-gold transition-colors">Masuk</a></li>
-                    <li><a @click="open=false" href="{{ route('register') }}" wire:navigate class="hover:text-barber-gold transition-colors">Daftar</a></li>
-                @endguest
             </ul>
             
             @guest
-            <div class="mt-10 w-full flex justify-center px-8">
-                <a href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-xs uppercase tracking-wider py-4 px-8 rounded-full transition-all w-full max-w-xs text-center shadow-lg">
-                    Reservasi Sekarang
+            <div class="mt-8 w-full flex flex-col gap-4 px-8">
+                <a @click="open=false" href="{{ route('login') }}" wire:navigate class="border border-zinc-700 hover:border-zinc-500 text-white font-bold text-sm uppercase tracking-wider py-4 px-8 rounded-full transition-all w-full max-w-xs mx-auto text-center">
+                    Masuk Akun
+                </a>
+                <a @click="open=false" href="{{ route('booking.create') }}" wire:navigate class="bg-barber-gold hover:bg-white text-barber-dark font-bold text-sm uppercase tracking-wider py-4 px-8 rounded-full transition-all w-full max-w-xs mx-auto text-center shadow-lg shadow-barber-gold/20">
+                    + Reservasi Sekarang
                 </a>
             </div>
             @endguest

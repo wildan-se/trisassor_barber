@@ -29,7 +29,7 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-zinc-800">
-                    @foreach(['Kode', 'Pelanggan', 'Layanan', 'Barber', 'Tanggal & Waktu', 'Total', 'Status', 'Aksi'] as $h)
+                    @foreach(['Kode', 'Antrian', 'Pelanggan', 'Layanan', 'Barber', 'Tanggal & Waktu', 'Total', 'Status', 'Aksi'] as $h)
                     <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500">{{ $h }}</th>
                     @endforeach
                 </tr>
@@ -38,6 +38,7 @@
                 @forelse($bookings as $booking)
                 <tr class="hover:bg-zinc-800/30 transition-colors">
                     <td class="px-4 py-3 font-mono text-barber-gold text-xs font-bold">{{ $booking->booking_code }}</td>
+                    <td class="px-4 py-3 font-bold"><span class="bg-zinc-800 text-zinc-300 px-2 py-1 rounded text-xs">{{ $booking->formatted_queue_number }}</span></td>
                     <td class="px-4 py-3">
                         <p class="text-white font-semibold">{{ $booking->user->name }}</p>
                         <p class="text-zinc-500 text-xs">{{ $booking->user->phone }}</p>
@@ -67,7 +68,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="px-4 py-12 text-center text-zinc-500">Tidak ada booking ditemukan.</td>
+                    <td colspan="9" class="px-4 py-12 text-center text-zinc-500">Tidak ada booking ditemukan.</td>
                 </tr>
                 @endforelse
             </tbody>

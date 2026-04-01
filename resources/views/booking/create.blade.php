@@ -43,7 +43,7 @@
                         <label class="relative cursor-pointer">
                             <input type="radio" name="service_id" value="{{ $service->id }}"
                                    x-model="serviceId"
-                                   @change="serviceName = '{{ $service->name }}'; serviceDuration = {{ $service->duration_minutes }}; servicePrice = '{{ $service->formatted_price }}'"
+                                   @change="serviceName = '{{ addslashes($service->name) }}'; serviceDuration = {{ $service->duration_minutes }}; servicePrice = '{{ $service->formatted_price }}'"
                                    class="sr-only">
                             <div class="p-5 border rounded-xl transition-all duration-200"
                                  :class="serviceId == '{{ $service->id }}' ? 'border-barber-gold bg-barber-gold/5' : 'border-zinc-800 hover:border-zinc-600'">
@@ -92,7 +92,7 @@
                             <label class="cursor-pointer">
                                 <input type="radio" name="barber_id" value="{{ $barber->id }}"
                                        x-model="barberId"
-                                       @change="barberName = '{{ $barber->name }}'; slots = []; selectedSlot = ''; fetchSlots()"
+                                       @change="barberName = '{{ addslashes($barber->name) }}'; slots = []; selectedSlot = ''; fetchSlots()"
                                        class="sr-only">
                                 <div class="p-4 border rounded-xl text-center transition-all"
                                      :class="barberId == '{{ $barber->id }}' ? 'border-barber-gold bg-barber-gold/5' : 'border-zinc-800 hover:border-zinc-700'">
@@ -200,6 +200,16 @@
                         </div>
                     </div>
 
+                    @if(auth()->check() && empty(auth()->user()->phone))
+                    <div class="mb-6 bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">WhatsApp / No. HP<span class="text-red-500 ml-1">*</span></label>
+                        <p class="text-xs text-zinc-400 mb-3 leading-relaxed">Anda masuk via Google. Kami memerlukan No. HP Anda untuk konfirmasi reservasi & info antrean.</p>
+                        <input type="text" name="phone" x-model="phoneInput" placeholder="Misal: 081234567890" 
+                               class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm focus:border-barber-gold focus:outline-none focus:ring-1 focus:ring-barber-gold transition-colors placeholder-zinc-600">
+                        @error('phone') <p class="text-red-400 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
+                    </div>
+                    @endif
+
                     <p class="text-zinc-500 text-xs mb-6 text-center">
                         Booking akan berstatus <strong class="text-zinc-300">Menunggu</strong> hingga dikonfirmasi oleh admin.
                     </p>
@@ -209,8 +219,9 @@
                                 class="py-3 px-6 rounded-full border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-all text-sm font-bold uppercase tracking-wider">
                             ← Kembali
                         </button>
-                        <button type="submit"
-                                class="bg-barber-gold hover:bg-white text-barber-dark font-bold py-3 px-8 rounded-full transition-all uppercase tracking-wider text-sm shadow-xl">
+                        <button type="submit" 
+                                :disabled="requirePhone && !phoneInput"
+                                class="bg-barber-gold hover:bg-white text-barber-dark font-bold py-3 px-8 rounded-full transition-all uppercase tracking-wider text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed">
                             ✓ Konfirmasi Booking
                         </button>
                     </div>
@@ -224,21 +235,35 @@
 @push('scripts')
 <script>
 function bookingForm() {
+    const config = {!! json_encode([
+        'step' => $errors->has('booking_time') || $errors->has('barber_id') || $errors->has('booking_date') ? 2 : 1,
+        'serviceId' => old('service_id'),
+        'barberId' => old('barber_id'),
+        'bookingDate' => old('booking_date'),
+        'selectedSlot' => old('booking_time'),
+        'notes' => old('notes'),
+        'phoneInput' => old('phone', ''),
+        'requirePhone' => auth()->check() && empty(auth()->user()->phone),
+        'serverError' => $errors->has('booking_time')
+    ]) !!};
+
     return {
-        step: {{ $errors->has('booking_time') || $errors->has('barber_id') || $errors->has('booking_date') ? 2 : 1 }},
-        serviceId: @json(old('service_id')),
+        step: config.step,
+        serviceId: config.serviceId,
         serviceName: '',
         servicePrice: '',
         serviceDuration: 0,
-        barberId: @json(old('barber_id')),
+        barberId: config.barberId,
         barberName: '',
-        bookingDate: @json(old('booking_date')),
-        selectedSlot: @json(old('booking_time')),
-        notes: @json(old('notes')),
+        bookingDate: config.bookingDate,
+        selectedSlot: config.selectedSlot,
+        notes: config.notes,
+        phoneInput: config.phoneInput,
+        requirePhone: config.requirePhone,
         slots: [],
         loadingSlots: false,
         slotsMessage: '',
-        serverError: {{ $errors->has('booking_time') ? 'true' : 'false' }},
+        serverError: config.serverError,
 
         init() {
             // Restore proper data names if service exists

@@ -45,6 +45,7 @@
             {{-- Detail --}}
             <div class="p-6 space-y-4">
                 @foreach([
+                    ['label' => 'No. Antrian','value' => $booking->formatted_queue_number],
                     ['label' => 'Layanan',  'value' => $booking->service->name],
                     ['label' => 'Barber',   'value' => $booking->barber->name],
                     ['label' => 'Tanggal',  'value' => $booking->booking_date->translatedFormat('l, d F Y')],

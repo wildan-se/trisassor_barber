@@ -46,7 +46,7 @@
                                 <div>
                                     <p class="font-bold text-white text-sm group-hover:text-barber-gold transition-colors">{{ $booking->service->name }}</p>
                                     <p class="text-zinc-500 text-xs">{{ $booking->barber->name }} • {{ $booking->booking_date->translatedFormat('d M Y') }} • {{ substr($booking->booking_time, 0, 5) }} WIB</p>
-                                    <p class="text-zinc-600 text-xs font-mono">{{ $booking->booking_code }}</p>
+                                    <p class="text-zinc-600 text-xs font-mono mt-1">{{ $booking->booking_code }} <span class="bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded ml-2 text-[10px] tracking-wide">Antrian: <span class="text-barber-gold font-bold">{{ $booking->formatted_queue_number }}</span></span></p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 flex-shrink-0">

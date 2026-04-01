@@ -42,7 +42,12 @@ class BookingController extends Controller
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|date_format:H:i',
             'notes'        => 'nullable|string|max:500',
+            'phone'        => Auth::check() && empty(Auth::user()->phone) ? 'required|string|min:10|max:15' : 'nullable|string',
         ]);
+
+        if (Auth::check() && empty(Auth::user()->phone) && !empty($validated['phone'])) {
+            Auth::user()->update(['phone' => $validated['phone']]);
+        }
 
         $service = Service::findOrFail($validated['service_id']);
 
@@ -67,6 +72,12 @@ class BookingController extends Controller
                     throw new \Exception('Slot waktu ini baru saja dipesan oleh orang lain. Silakan pilih jadwal yang berbeda.');
                 }
 
+                // Hitung nomor antrian (otomatis reset per hari per kapster)
+                $lastQueue = Booking::where('barber_id', $barber->id)
+                    ->whereDate('booking_date', $validated['booking_date'])
+                    ->max('queue_number');
+                $queueNumber = $lastQueue ? $lastQueue + 1 : 1;
+
                 // 3. Simpan jika jadwal benar-benar dipastikan aman dan kosong
                 return Booking::create([
                     'user_id'      => Auth::id(),
@@ -76,6 +87,7 @@ class BookingController extends Controller
                     'booking_time' => $validated['booking_time'] . ':00',
                     'end_time'     => $endTime,
                     'total_price'  => $service->price,
+                    'queue_number' => $queueNumber,
                     'status'       => 'pending',
                     'notes'        => $validated['notes'] ?? null,
                 ]);

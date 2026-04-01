@@ -10,17 +10,13 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@trisassor.com'],
-            [
-                'name'     => 'Admin Trisassor',
-                'email'    => 'admin@trisassor.com',
-                'phone'    => '081234567890',
-                'password' => Hash::make('admin123'),
-                'role'     => 'admin',
-                'email_verified_at' => now(),
-            ]
-        );
+        $admin = User::firstOrNew(['email' => 'admin@trisassor.com']);
+        $admin->name = 'Admin Trisassor';
+        $admin->phone = '081234567890';
+        $admin->password = Hash::make('admin123');
+        $admin->role = 'admin';
+        $admin->email_verified_at = now();
+        $admin->save();
 
         $this->command->info('✅ Admin seeded: admin@trisassor.com / admin123');
     }

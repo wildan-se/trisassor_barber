@@ -12,6 +12,7 @@ class Booking extends Model
 
     protected $fillable = [
         'booking_code',
+        'queue_number',
         'user_id',
         'barber_id',
         'service_id',
@@ -111,6 +112,15 @@ class Booking extends Model
     public function getFormattedPriceAttribute(): string
     {
         return 'Rp ' . number_format($this->total_price, 0, ',', '.');
+    }
+
+    public function getFormattedQueueNumberAttribute(): string
+    {
+        if (!$this->queue_number || !$this->barber) {
+            return '-';
+        }
+        $barberInitial = strtoupper(substr($this->barber->name, 0, 1));
+        return $barberInitial . '-' . str_pad((string)$this->queue_number, 2, '0', STR_PAD_LEFT);
     }
 
     public function canBeCancelled(): bool
