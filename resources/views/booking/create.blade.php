@@ -233,19 +233,22 @@
 @endsection
 
 @push('scripts')
+<script type="application/json" id="booking-config">
+{!! json_encode([
+    'step' => $errors->has('booking_time') || $errors->has('barber_id') || $errors->has('booking_date') ? 2 : 1,
+    'serviceId' => old('service_id'),
+    'barberId' => old('barber_id'),
+    'bookingDate' => old('booking_date'),
+    'selectedSlot' => old('booking_time'),
+    'notes' => old('notes'),
+    'phoneInput' => old('phone', ''),
+    'requirePhone' => auth()->check() && empty(auth()->user()->phone),
+    'serverError' => $errors->has('booking_time')
+]) !!}
+</script>
 <script>
 function bookingForm() {
-    const config = {!! json_encode([
-        'step' => $errors->has('booking_time') || $errors->has('barber_id') || $errors->has('booking_date') ? 2 : 1,
-        'serviceId' => old('service_id'),
-        'barberId' => old('barber_id'),
-        'bookingDate' => old('booking_date'),
-        'selectedSlot' => old('booking_time'),
-        'notes' => old('notes'),
-        'phoneInput' => old('phone', ''),
-        'requirePhone' => auth()->check() && empty(auth()->user()->phone),
-        'serverError' => $errors->has('booking_time')
-    ]) !!};
+    const config = JSON.parse(document.getElementById('booking-config').textContent);
 
     return {
         step: config.step,
