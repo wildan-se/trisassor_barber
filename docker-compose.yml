@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: barber-app
+    ports:
+      - "8080:8080"
+    # Mengambil key & pengaturan rahasia dari file .env (jika ada)
+    env_file: .env
+    environment:
+      # Override environment untuk mengetes suasana Production yang sesungguhnya!
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8080
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=trisassor_barber
+      - DB_USERNAME=sail
+      - DB_PASSWORD=password
+      - RUN_MIGRATIONS=true
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - barber-network
+
+  db:
+    image: mariadb:10.11
+    container_name: barber-db
+    ports:
+      - "33060:3306" # Membuka port 3306 di laptop agar tidak bentrok dengan XAMPP/MySQL lokal
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=trisassor_barber
+      - MYSQL_USER=sail
+      - MYSQL_PASSWORD=password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-ppassword"]
+      retries: 3
+      timeout: 5s
+    volumes:
+      - barber-mysql:/var/lib/mysql
+    networks:
+      - barber-network
+
+volumes:
+  barber-mysql:
+    driver: local
+
+networks:
+  barber-network:
+    driver: bridge
