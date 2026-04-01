@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ─── Admin Routes ─────────────────────────────────────────────────────────────
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin', 'no-cache'])->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
